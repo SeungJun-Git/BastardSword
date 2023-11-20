@@ -72,6 +72,5 @@ public class Animation{
 
     public void stopThread() {
         thread.interrupt();
-        System.out.println(thread.isInterrupted());
     }
 }
