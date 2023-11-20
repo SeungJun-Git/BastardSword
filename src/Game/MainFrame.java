@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 public class MainFrame extends JFrame {
     private static final int WINDOW_WIDTH = 1920;
     private static final int WINDOW_HEIGHT = 1080;
+    private final int MOVEMENT = 0;
+    private final int ACTION = 1;
     private JLabel background;
     private Character character;
     public MainFrame() {
@@ -45,54 +47,58 @@ public class MainFrame extends JFrame {
             public void keyPressed(KeyEvent e) {
                 switch(e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
-                        if(!character.getCds().isLeft()) {
+                        if(character.getCds().getStatus()[MOVEMENT]!=CharacterStat.MOVE_LEFT) {
+                            character.getCds().getStatus()[MOVEMENT]=CharacterStat.MOVE_LEFT;
                             character.getCds().moveLeft();
                         }
                         break;
                     case KeyEvent.VK_RIGHT:
-                        if(!character.getCds().isRight()) {
+                        if(character.getCds().getStatus()[MOVEMENT]!=CharacterStat.MOVE_RIGHT) {
+                            character.getCds().getStatus()[MOVEMENT]=CharacterStat.MOVE_RIGHT;
                             character.getCds().moveRight();
                         }
                         break;
                     case KeyEvent.VK_Z:
-                        if(!character.getCds().isAttack()) {
+                        if(character.getCds().getStatus()[ACTION]!=CharacterStat.ATTACK) {
+                            character.getCds().getStatus()[ACTION]=CharacterStat.ATTACK;
                             character.getCds().attack1();
                         }
                         break;
                     case KeyEvent.VK_X:
-                        if(!character.getCds().isAttack()) {
+                        if(character.getCds().getStatus()[ACTION]!=CharacterStat.ATTACK) {
+                            character.getCds().getStatus()[ACTION]=CharacterStat.ATTACK;
                             character.getCds().attack2();
                         }
                         break;
                     case KeyEvent.VK_C:
-                        if(!character.getCds().isAttack()) {
+                        if(character.getCds().getStatus()[ACTION]!=CharacterStat.ATTACK) {
+                            character.getCds().getStatus()[ACTION]=CharacterStat.ATTACK;
                             character.getCds().attack3();
                         }
                         break;
                     case KeyEvent.VK_SPACE:
-                        if(!character.getCds().isDown() && !character.getCds().isUp()) {
+                        if(character.getCds().getStatus()[ACTION]!=CharacterStat.UP&&character.getCds().getStatus()[ACTION]!=CharacterStat.DOWN) {
+                            character.getCds().getStatus()[ACTION]=CharacterStat.UP;
                             character.getCds().jumpCharacter();
                         }
                         break;
                     case KeyEvent.VK_CONTROL:
-                        if(!character.getCds().isRoll()) {
-                            character.getCds().roll();
+                        if(character.getCds().getStatus()[ACTION]!=CharacterStat.ROLL) {
+                            character.getCds().getStatus()[ACTION]=CharacterStat.ROLL;
+                            character.getCds().down();
                         }
                         break;
                 }
-                character.getCds().setStayStatus(false);
             }
             @Override
             public void keyReleased(KeyEvent e) {
                 switch(e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
-                        character.getCds().setLeft(false);
-                        break;
                     case KeyEvent.VK_RIGHT:
-                        character.getCds().setRight(false);
+                        character.getCds().getStatus()[MOVEMENT]=CharacterStat.STAY;
+                        character.getCds().stayMotion();
                         break;
                 }
-                character.getCds().setStayStatus(true);
             }
 
         });

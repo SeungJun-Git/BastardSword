@@ -8,15 +8,17 @@ import javax.swing.*;
 @Getter
 @Setter
 public class CharacterDetailSetting extends JLabel implements CharacterStatus{
-    private static final int SPEED = 4;
-    private static final int JUMPSPEED = 6;
+    private final int SPEED = 4;
+    private final int JUMPSPEED = 6;
+    private final int MOVEMENT = 0;
+    private final int ACTION = 1;
 
-    private boolean left, right, stayStatus, attack, up, down, roll;
     private int x, y;
     private int width, height;
     private String selectClass;
 
     private CharacterWay cWay;
+    private CharacterStat[] status;
 
     private MainFrame frame;
     private ImageControl image;
@@ -26,6 +28,8 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
         this.selectClass = selectClass;
         this.width = width;
         this.height = height;
+
+        status = new CharacterStat[2];
 
         initCharacterStatus();
 
@@ -39,10 +43,7 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
     }
     public void initCharacterStatus() {
         //시작시 가만히 서있는 상태
-        stayStatus = true;
-        left = false;
-        right = false;
-        attack = false;
+        status[MOVEMENT] = CharacterStat.STAY;
         cWay = cWay.RIGHT;
     }
     @Override
@@ -50,17 +51,18 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
         //이미지 객체 생성후 사이즈 조절
         image = new ImageControl(selectClass,"Stay","idle_",width,height);
         ani = new Animation(image, this);
-        stayStatus = true;
+        status[MOVEMENT] = CharacterStat.STAY;
         new Thread(()->{
             ani.twoWayRepeat();
-            while(stayStatus) {
+            while(status[MOVEMENT] == CharacterStat.STAY) {
                 try {
                     Thread.sleep(100);
+                    System.out.println("아직 진행중...");
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
-            stayStatus = false;
+            status[MOVEMENT] = CharacterStat.NONE;
             ani.stopThread();
         }).start();
     }
@@ -70,11 +72,10 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
         //이미지 객체 생성후 사이즈 조절
         image = new ImageControl(selectClass,"MoveRight","idle_",width,height);
         ani = new Animation(image, this);
-        right = true;
-        stayStatus = false;
+        status[MOVEMENT] = CharacterStat.MOVE_RIGHT;
         new Thread(()->{
             ani.oneWayRepeat();
-            while(right) {
+            while(status[MOVEMENT] == CharacterStat.MOVE_RIGHT) {
                 x=x+SPEED;
                 setLocation(x,y);
                 try {
@@ -83,7 +84,7 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
                     throw new RuntimeException(e);
                 }
             }
-            right = false;
+            status[MOVEMENT] = CharacterStat.STAY;
             ani.stopThread();
         }).start();
     }
@@ -93,11 +94,10 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
         //이미지 객체 생성후 사이즈 조절
         image = new ImageControl(selectClass,"MoveLeft","idle_",width,height);
         ani = new Animation(image, this);
-        left = true;
-        stayStatus = false;
+        status[MOVEMENT] = CharacterStat.MOVE_LEFT;
         new Thread(()->{
             ani.oneWayRepeat();
-            while(left) {
+            while(status[MOVEMENT] == CharacterStat.MOVE_LEFT) {
                 x=x-SPEED;
                 setLocation(x,y);
                 try {
@@ -106,7 +106,7 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
                     throw new RuntimeException(e);
                 }
             }
-            left = false;
+            status[MOVEMENT] = CharacterStat.STAY;
             ani.stopThread();
         }).start();
     }
@@ -115,60 +115,61 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
     public void attack1() {
         image = new ImageControl(selectClass,"Attack_1","1_atk_",width,height);
         ani = new Animation(image, this);
-        attack = true;
-        right = false;
-        left = false;
+        status[ACTION] = CharacterStat.ATTACK;
 
         ani.oneTimeExecute();
         new Thread(()->{
             try {
                 Thread.sleep(image.getImageCount()*70);
-                attack = false;
+                status[ACTION] = CharacterStat.NONE;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }).start();
+        status[ACTION] = CharacterStat.NONE;
     }
 
     @Override
     public void attack2() {
         image = new ImageControl(selectClass,"Attack_2","2_atk_",width,height);
         ani = new Animation(image, this);
-        attack = true;
+        status[ACTION] = CharacterStat.ATTACK;
 
         ani.oneTimeExecute();
         new Thread(()->{
             try {
                 Thread.sleep(image.getImageCount()*70);
-                attack = false;
+                status[ACTION] = CharacterStat.NONE;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }).start();
+        status[ACTION] = CharacterStat.NONE;
     }
 
     @Override
     public void attack3() {
         image = new ImageControl(selectClass,"Attack_3","3_atk_",width,height);
         ani = new Animation(image, this);
-        attack = true;
+        status[ACTION] = CharacterStat.ATTACK;
 
         ani.oneTimeExecute();
         new Thread(()->{
             try {
                 Thread.sleep(image.getImageCount()*70);
-                attack = false;
+                status[ACTION] = CharacterStat.NONE;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }).start();
+        status[ACTION] = CharacterStat.NONE;
     }
 
     @Override
     public void jumpCharacter() {
         image = new ImageControl(selectClass,"Jump_up","jump_up_",width,height);
         ani = new Animation(image, this);
-        up = true;
+        status[ACTION] = CharacterStat.UP;
 
         new Thread(()->{
             ani.oneTimeExecute();
@@ -181,7 +182,7 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
                     throw new RuntimeException(e);
                 }
             }
-            up = false;
+            status[ACTION] = CharacterStat.NONE;
             down();
         }).start();
     }
@@ -189,7 +190,7 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
     public void down() {
         image = new ImageControl(selectClass,"Jump_down","jump_down_",width,height);
         ani = new Animation(image, this);
-        down = true;
+        status[ACTION] = CharacterStat.DOWN;
 
         new Thread(()->{
             ani.oneTimeExecute();
@@ -202,14 +203,15 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
                     throw new RuntimeException(e);
                 }
             }
-            down = false;
+            status[ACTION] = CharacterStat.NONE;
         }).start();
     }
 
     public void roll() {
         image = new ImageControl(selectClass,"Roll","roll_",width,height);
         ani = new Animation(image, this);
-        roll = true;
+        status[ACTION] = CharacterStat.ROLL;
+
         new Thread(()->{
             ani.oneTimeExecute();
             for(int i=0; i<130/JUMPSPEED; i++) {
@@ -221,7 +223,7 @@ public class CharacterDetailSetting extends JLabel implements CharacterStatus{
                     throw new RuntimeException(e);
                 }
             }
-            roll = false;
+            status[ACTION] = CharacterStat.NONE;
         }).start();
     }
 }
