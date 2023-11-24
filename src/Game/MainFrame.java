@@ -1,9 +1,9 @@
 package Game;
 
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -13,7 +13,10 @@ public class MainFrame extends JFrame {
     private final int MOVEMENT = 0;
     private final int ACTION = 1;
     private JLabel background;
-    private Character character;
+    private final Character character;
+    //캐릭터 테두리 선
+    private LineBorder b = new LineBorder(Color.red, 3,true);
+    private JLabel testLabel;
     public MainFrame() {
         initSettings();
         initBackground();
@@ -23,7 +26,17 @@ public class MainFrame extends JFrame {
 
         background.add(character.getCds());
 
+        testSettings();
         setVisible(true);
+    }
+
+    public void testSettings() {
+        character.getCds().setBorder(b);
+        testLabel = new JLabel();
+        testLabel.setLocation(character.getCds().getX(),character.getCds().getY());
+        testLabel.setSize(100,200);
+        testLabel.setBorder(b);
+        background.add(testLabel);
     }
 
     public void initSettings() {
@@ -48,56 +61,45 @@ public class MainFrame extends JFrame {
                 switch(e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
                         if(character.getCds().getStatus()[MOVEMENT]!=CharacterStat.MOVE_LEFT) {
-                            character.getCds().getStatus()[MOVEMENT]=CharacterStat.MOVE_LEFT;
                             character.getCds().moveLeft();
                         }
                         break;
                     case KeyEvent.VK_RIGHT:
                         if(character.getCds().getStatus()[MOVEMENT]!=CharacterStat.MOVE_RIGHT) {
-                            character.getCds().getStatus()[MOVEMENT]=CharacterStat.MOVE_RIGHT;
                             character.getCds().moveRight();
                         }
                         break;
                     case KeyEvent.VK_Z:
                         if(character.getCds().getStatus()[ACTION]!=CharacterStat.ATTACK) {
-                            character.getCds().getStatus()[ACTION]=CharacterStat.ATTACK;
                             character.getCds().attack1();
                         }
                         break;
                     case KeyEvent.VK_X:
                         if(character.getCds().getStatus()[ACTION]!=CharacterStat.ATTACK) {
-                            character.getCds().getStatus()[ACTION]=CharacterStat.ATTACK;
                             character.getCds().attack2();
                         }
                         break;
                     case KeyEvent.VK_C:
                         if(character.getCds().getStatus()[ACTION]!=CharacterStat.ATTACK) {
-                            character.getCds().getStatus()[ACTION]=CharacterStat.ATTACK;
                             character.getCds().attack3();
                         }
                         break;
                     case KeyEvent.VK_SPACE:
                         if(character.getCds().getStatus()[ACTION]!=CharacterStat.UP&&character.getCds().getStatus()[ACTION]!=CharacterStat.DOWN) {
-                            character.getCds().getStatus()[ACTION]=CharacterStat.UP;
                             character.getCds().jumpCharacter();
                         }
                         break;
                     case KeyEvent.VK_CONTROL:
                         if(character.getCds().getStatus()[ACTION]!=CharacterStat.ROLL) {
-                            character.getCds().getStatus()[ACTION]=CharacterStat.ROLL;
-                            character.getCds().down();
+                            character.getCds().roll();
                         }
                         break;
                 }
             }
             @Override
             public void keyReleased(KeyEvent e) {
-                switch(e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT:
-                    case KeyEvent.VK_RIGHT:
-                        character.getCds().getStatus()[MOVEMENT]=CharacterStat.STAY;
-                        character.getCds().stayMotion();
-                        break;
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT -> character.getCds().stayMotion();
                 }
             }
 
@@ -105,6 +107,6 @@ public class MainFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame();
+        new MainFrame();
     }
 }
