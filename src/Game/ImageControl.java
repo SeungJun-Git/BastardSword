@@ -46,14 +46,14 @@ public class ImageControl {
     }
 
     //함수 호출 시 크기 조절
-    public ImageIcon[] changeImageSize(int x, int y) {
-        ImageIcon resizedImage[] = new ImageIcon[imageCount];
-        for(int i=0; i<icon.length; i++) {
-            tmpImage = icon[i].getImage();
-            tmpImage = tmpImage.getScaledInstance(x, y, Image.SCALE_SMOOTH);
-            resizedImage[i] = new ImageIcon(tmpImage);
-        }
-        return resizedImage;
-    }
+//    public ImageIcon[] changeImageSize(int x, int y) {
+//        ImageIcon resizedImage[] = new ImageIcon[imageCount];
+//        for(int i=0; i<icon.length; i++) {
+//            tmpImage = icon[i].getImage();
+//            tmpImage = tmpImage.getScaledInstance(x, y, Image.SCALE_SMOOTH);
+//            resizedImage[i] = new ImageIcon(tmpImage);
+//        }
+//        return resizedImage;
+//    }
 
 }

@@ -12,16 +12,19 @@ public class Character implements CharacterClass{
     private static final int CHARACTER_WIDTH = 800;
     private static final int CHARACTER_HEIGHT = CHARACTER_WIDTH/2;
 
+    private int health;
+
     private CharacterDetailSetting cds;
     private MainFrame frame;
 
     public Character(MainFrame frame, String selected) {
         this.frame = frame;
+        health = 10;
 
         if(selected=="Warrior")
             warrior();
-        else if(selected=="Mage")
-            mage();
+        else if(selected=="Priestess")
+            priestess();
         else if(selected=="Assassin")
             assassin();
     }
@@ -31,8 +34,8 @@ public class Character implements CharacterClass{
     }
 
     @Override
-    public void mage() {
-        cds = new CharacterDetailSetting(frame, "Mage",CHARACTER_WIDTH, CHARACTER_HEIGHT);
+    public void priestess() {
+        cds = new CharacterDetailSetting(frame, "Priestess",CHARACTER_WIDTH, CHARACTER_HEIGHT);
     }
 
     @Override
